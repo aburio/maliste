@@ -1,6 +1,6 @@
 import { Box, Flex, Heading, Stack, Text } from "@chakra-ui/react";
 import { Outlet, useParams } from "react-router-dom";
-import { Supabase } from "./../../lib/api/supabase";
+import { Supabase } from "../../lib/api/supabase";
 
 export async function loader() {
   const { data, error } = await Supabase.from("lists").select(

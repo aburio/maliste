@@ -11,8 +11,8 @@ import {
 } from "@chakra-ui/react";
 import { QueryData } from "@supabase/supabase-js";
 import { useLoaderData } from "react-router-dom";
-import { Supabase } from "./../../lib/api/supabase";
-import { Tables } from "./../../lib/api/supabase.types";
+import { Supabase } from "../../lib/api/supabase";
+import { Tables } from "../../lib/api/supabase.types";
 
 const listWithDetails = Supabase.from("lists")
   .select(`id, name, created_at, updated_at, users_profiles(name), elements(*)`)
