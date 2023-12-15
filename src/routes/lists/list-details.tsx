@@ -11,11 +11,10 @@ import {
 } from "@chakra-ui/react";
 import { QueryData } from "@supabase/supabase-js";
 import { useLoaderData } from "react-router-dom";
-import { supabase } from "../../lib/api/supabase";
+import { Supabase } from "../../lib/api/supabase";
 import { Tables } from "../../lib/api/supabase.types";
 
-const listWithDetails = supabase
-  .from("lists")
+const listWithDetails = Supabase.from("lists")
   .select(`id, name, created_at, updated_at, users_profiles(name), elements(*)`)
   .single();
 type ListWithDetails = QueryData<typeof listWithDetails>;
@@ -27,7 +26,9 @@ function Item({ item }: { item: Tables<"elements"> }) {
         cursor="pointer"
         onClick={() => window.open(item.external_url, "_blank")}
       >
-        <Image src={String(item.img_url)} />
+        <Box height="350px" width="100%">
+          <Image boxSize="100%" objectFit="cover" src={String(item.img_url)} />
+        </Box>
         <Stack direction={["column"]} mt={3} spacing={2}>
           <Heading size="sm" noOfLines={1}>
             {item.name}
@@ -41,24 +42,23 @@ function Item({ item }: { item: Tables<"elements"> }) {
 }
 
 export async function loader({ params }: any) {
-  const { data, error } = await supabase
-    .from("lists")
+  const { data, error } = await Supabase.from("lists")
     .select(
       `id, name, created_at, updated_at, users_profiles(name), elements(*)`
     )
     .eq(`id`, String(params.listId))
     .maybeSingle();
 
-  console.log(error);
-
   if (error) {
+    console.error(error);
     return error;
   }
+
   console.log(data);
   return data;
 }
 
-export function ListDetailsPage() {
+export function ListDetails() {
   const list = useLoaderData() as ListWithDetails;
 
   return (

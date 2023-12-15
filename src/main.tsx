@@ -2,11 +2,12 @@ import { ChakraProvider } from "@chakra-ui/react";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import ErrorPage from "./routes/ErrorPage";
+import ErrorPage from "./routes/error";
 import {
-  ListDetailsPage,
-  loader as listLoader,
-} from "./routes/list-details-page/ListDetailsPage";
+  ListDetails,
+  loader as listDetailsLoader,
+} from "./routes/lists/list-details";
+import { ListsTable } from "./routes/lists/lists-table";
 import Root from "./routes/root";
 
 const router = createBrowserRouter([
@@ -16,9 +17,22 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
     children: [
       {
-        path: "list-details/:listId",
-        element: <ListDetailsPage />,
-        loader: listLoader,
+        path: "lists",
+        element: <ListsTable />,
+        children: [
+          {
+            id: "ListDetails", // Can be use to retrieve loader query in childrens with const query = useRouteLoaderData("listDetails");
+            path: ":listId",
+            element: <ListDetails />,
+            loader: listDetailsLoader,
+            children: [
+              {
+                path: "edit",
+                element: <div></div>,
+              },
+            ],
+          },
+        ],
       },
     ],
   },
