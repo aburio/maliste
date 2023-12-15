@@ -20,9 +20,9 @@ const listWithDetails = supabase
   .single();
 type ListWithDetails = QueryData<typeof listWithDetails>;
 
-function List({ items }: { items: Tables<"elements">[] }) {
-  const listItems = items?.map((item: Tables<"elements">) => (
-    <Card key={item.id}>
+function Item({ item }: { item: Tables<"elements"> }) {
+  return (
+    <Card>
       <CardBody
         cursor="pointer"
         onClick={() => window.open(item.external_url, "_blank")}
@@ -37,12 +37,6 @@ function List({ items }: { items: Tables<"elements">[] }) {
         </Stack>
       </CardBody>
     </Card>
-  ));
-
-  return (
-    <SimpleGrid columns={{ sm: 1, md: 2, lg: 3, xl: 3 }} my={5} spacing={5}>
-      {listItems}
-    </SimpleGrid>
   );
 }
 
@@ -66,7 +60,6 @@ export async function loader({ params }: any) {
 
 export function ListDetailsPage() {
   const list = useLoaderData() as ListWithDetails;
-  const items = list.elements;
 
   return (
     <>
@@ -85,7 +78,11 @@ export function ListDetailsPage() {
             {new Date(String(list.updated_at))?.toLocaleTimeString()}
           </Text>
         </Box>
-        <List items={items} />
+        <SimpleGrid columns={{ sm: 1, md: 2, lg: 3, xl: 3 }} my={5} spacing={5}>
+          {list.elements.map((item) => (
+            <Item key={item.id} item={item} />
+          ))}
+        </SimpleGrid>
       </Stack>
     </>
   );
