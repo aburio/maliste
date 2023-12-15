@@ -16,19 +16,18 @@ import { Tables } from "../../lib/api/supabase.types";
 
 const listWithDetails = supabase
   .from("lists")
-  .select(
-    `id, name, created_at, updated_at, users_profiles(name), elements(*)`
-  );
+  .select(`id, name, created_at, updated_at, users_profiles(name), elements(*)`)
+  .single();
 type ListWithDetails = QueryData<typeof listWithDetails>;
 
-function List({ items }: Tables<"elements">[] | null) {
-  const listItems = items.map((item: Tables<"elements">) => (
+function List({ items }: { items: Tables<"elements">[] }) {
+  const listItems = items?.map((item: Tables<"elements">) => (
     <Card key={item.id}>
       <CardBody
         cursor="pointer"
         onClick={() => window.open(item.external_url, "_blank")}
       >
-        <Image src={item.img_url} />
+        <Image src={String(item.img_url)} />
         <Stack direction={["column"]} mt={3} spacing={2}>
           <Heading size="sm" noOfLines={1}>
             {item.name}
@@ -47,7 +46,7 @@ function List({ items }: Tables<"elements">[] | null) {
   );
 }
 
-export async function loader({ params }) {
+export async function loader({ params }: any) {
   const { data, error } = await supabase
     .from("lists")
     .select(
@@ -57,17 +56,17 @@ export async function loader({ params }) {
     .maybeSingle();
 
   console.log(error);
-  console.log(data);
 
   if (error) {
-    return { error };
+    return error;
   }
-
-  return { data };
+  console.log(data);
+  return data;
 }
 
 export function ListDetailsPage() {
-  const { data } = useLoaderData() as ListWithDetails;
+  const list = useLoaderData() as ListWithDetails;
+  const items = list.elements;
 
   return (
     <>
@@ -77,16 +76,16 @@ export function ListDetailsPage() {
           alignItems="center"
           justifyContent="space-between"
         >
-          <Heading>{data.name}</Heading>
+          <Heading>{list.name}</Heading>
         </Flex>
         <Box>
           <Text>
-            par {data.users_profiles.name}, dernière mise à jour le{" "}
-            {new Date(data.updated_at)?.toLocaleDateString()} à{" "}
-            {new Date(data.updated_at)?.toLocaleTimeString()}
+            par {list.users_profiles?.name}, dernière mise à jour le{" "}
+            {new Date(String(list.updated_at))?.toLocaleDateString()} à{" "}
+            {new Date(String(list.updated_at))?.toLocaleTimeString()}
           </Text>
         </Box>
-        <List items={data.elements} />
+        <List items={items} />
       </Stack>
     </>
   );

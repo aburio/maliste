@@ -13,11 +13,6 @@ export default function ErrorPage() {
       <Box>
         <Text>Sorry, an unexpected error has occurred.</Text>
       </Box>
-      <Box>
-        <Text>
-          <i>{error.statusText || error.message}</i>
-        </Text>
-      </Box>
     </Stack>
   );
 }
