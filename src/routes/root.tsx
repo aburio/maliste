@@ -1,7 +1,7 @@
 import { Container } from "@chakra-ui/react";
 import { Outlet } from "react-router-dom";
-import { Footer } from "../components/layout/footer.tsx";
-import { Header } from "../components/layout/header.tsx";
+import { Footer } from "../components/layout/Footer";
+import { Header } from "../components/layout/Header";
 
 export default function Root() {
   return (
